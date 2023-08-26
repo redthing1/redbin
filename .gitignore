@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/redbin
+redbin.so
+redbin.dylib
+redbin.dll
+redbin.a
+redbin.lib
+redbin-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
+*.a
