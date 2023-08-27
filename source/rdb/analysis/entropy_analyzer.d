@@ -37,7 +37,7 @@ class EntropyAnalyzer : IBinaryAnalyzer {
     }
 
     double buffer_shantropy_ratio(ubyte[] buffer) {
-        return buffer_shantropy(buffer) / theoretical_max_shantropy(buffer.length);
+        return buffer_shantropy(buffer) / 8;
     }
 
     double buffer_mean(ubyte[] buffer) {
@@ -51,11 +51,8 @@ class EntropyAnalyzer : IBinaryAnalyzer {
 
     double[size_t] window_entropy_ratio_map;
     double[size_t] window_mean_map;
-    double aggregate_entropy_bits;
     double aggregate_entropy_ratio;
     double aggregate_mean;
-    double theoretical_max_entropy;
-    double window_theoretical_max_entropy;
     double window_entropy_ratio_min;
     double window_entropy_ratio_max;
     double window_entropy_ratio_mean;
@@ -64,12 +61,8 @@ class EntropyAnalyzer : IBinaryAnalyzer {
 
     void analyze() {
         // calculate aggregate stats
-        theoretical_max_entropy = theoretical_max_shantropy(data.length);
-        aggregate_entropy_bits = buffer_shantropy(data);
-        aggregate_entropy_ratio = aggregate_entropy_bits / theoretical_max_entropy;
+        aggregate_entropy_ratio = buffer_shantropy_ratio(data);
         aggregate_mean = buffer_mean(data);
-
-        window_theoretical_max_entropy = theoretical_max_shantropy(window_size);
 
         // calculate stats for each window
         for (size_t i = 0; i < data.length - window_size; i += window_slide) {
