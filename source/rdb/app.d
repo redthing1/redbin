@@ -11,6 +11,7 @@ import std.algorithm : min;
 import commandr;
 import typetips;
 import minlog;
+static import dcell;
 
 import rdb.analysis;
 import rdb.util;
@@ -31,8 +32,8 @@ void main(string[] args) {
 			.add(new Option("s", "slide", "window slide").name("window_slide").defaultValue("16384"))
 			.add(new Option("w", "window", "window size").name("window_size").defaultValue("1048576"))
 			.add(new Flag(null, "graph", "output entropy graph"))
-			.add(new Option("c", "cols", "entropy graph columns").defaultValue("80"))
-			.add(new Option("r", "rows", "entropy graph rows").defaultValue("20"))
+			// .add(new Option("c", "cols", "entropy graph columns").defaultValue("80"))
+			// .add(new Option("r", "rows", "entropy graph rows").defaultValue("20"))
 			.add(new Option(null, "csv", "output entropy csv"))
 		)
 		.parse(args);
@@ -64,8 +65,8 @@ void cmd_entropy(ProgramArgs args) {
 	auto window_size = args.option("window_size").to!size_t;
 
 	auto enable_graph = args.flag("graph");
-	auto graph_columns = args.option("cols").to!size_t;
-	auto graph_rows = args.option("rows").to!size_t;
+	// auto graph_columns = args.option("cols").to!size_t;
+	// auto graph_rows = args.option("rows").to!size_t;
 	auto save_csv = args.option("csv");
 
 	auto in_file_size = std.file.getSize(in_file);
@@ -98,12 +99,21 @@ void cmd_entropy(ProgramArgs args) {
 
 	if (enable_graph) {
 		// v1: just implement a simple graph
+
+		import std.math : round;
+
+		// detect console size
+		auto ts = dcell.newScreen();
+		auto terminal_size = ts.size;
+		// auto graph_columns = terminal_size.x - 2;
+		// auto graph_rows = terminal_size.y - 2;
+		auto graph_rows = cast(size_t)(round(terminal_size.y * 0.75));
+		auto graph_columns = terminal_size.x;
+
 		auto window_entropy_ratios = analyzer.window_entropy_ratio_map;
 		// size_t[size_t] graph_columns_map;
 		size_t[] graph_column_data;
 		graph_column_data.length = graph_columns;
-
-		import std.math : round;
 
 		// downsample to column count
 		// scale height to row count
